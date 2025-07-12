@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentiment Analysis</title>
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      :root {
+        /* Light theme variables */
+        --bg-color: #f5f6fa;
+        --container-bg: #fff;
+        --text-color: #333;
+        --border-color: #ccc;
+        --button-bg: #007bff;
+        --button-color: #fff;
+        --button-disabled: #6c757d;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+
+      [data-theme="dark"] {
+        /* Dark theme variables */
+        --bg-color: #1a1a1a;
+        --container-bg: #2d2d2d;
+        --text-color: #e0e0e0;
+        --border-color: #404040;
+        --button-bg: #0056b3;
+        --button-color: #fff;
+        --button-disabled: #4a4a4a;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--container-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+
+      textarea {
+        width: 100%;
+        height: 150px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        resize: vertical;
+        background-color: var(--container-bg);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+      }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--button-bg);
+        color: var(--button-color);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:disabled {
+        background-color: var(--button-disabled);
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 1.5rem;
+        font-size: 1.2rem;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        background-color: var(--button-bg);
+        color: var(--button-color);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .live-indicator {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+        background-color: var(--container-bg);
+        border: 1px solid var(--border-color);
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; }
+        100% { opacity: 0.6; }
+      }
+
+      .live-typing {
+        animation: pulse 1.5s infinite;
+      }
+
+      .confidence-meter {
+        margin-top: 1rem;
+        background: var(--bg-color);
+        border-radius: 8px;
+        padding: 1rem;
+        position: relative;
+      }
+
+      .meter-container {
+        height: 12px;
+        background-color: var(--border-color);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .meter-fill {
+        height: 100%;
+        background: linear-gradient(90deg, 
+          #ff4d4d 0%, 
+          #ffad4d 30%, 
+          #4dff4d 60%, 
+          #4d4dff 100%
+        );
+        transition: width 0.3s ease-in-out;
+      }
+
+      .meter-marker {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background-color: var(--text-color);
+        opacity: 0.5;
+      }
+
+      .meter-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        color: var(--text-color);
+        font-size: 0.8rem;
+        opacity: 0.8;
+      }
+
+      .confidence-value {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        color: var(--text-color);
+      }
+
+      .sentiment-label {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        margin-right: 0.5rem;
+      }
+
+      .sentiment-label.positive {
+        background-color: rgba(77, 255, 77, 0.2);
+        color: #2eb82e;
+      }
+
+      .sentiment-label.negative {
+        background-color: rgba(255, 77, 77, 0.2);
+        color: #e60000;
+      }
+
+      .sentiment-label.neutral {
+        background-color: rgba(128, 128, 128, 0.2);
+        color: #666666;
+      }
+
+      [data-theme="dark"] .sentiment-label.positive {
+        background-color: rgba(77, 255, 77, 0.1);
+        color: #66ff66;
+      }
+
+      [data-theme="dark"] .sentiment-label.negative {
+        background-color: rgba(255, 77, 77, 0.1);
+        color: #ff6666;
+      }
+
+      [data-theme="dark"] .sentiment-label.neutral {
+        background-color: rgba(128, 128, 128, 0.1);
+        color: #999999;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" src="app.js"></script>
+  </body>
+</html> 
