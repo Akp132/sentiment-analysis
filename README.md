@@ -1,3 +1,7 @@
+# 📹 Demo Video
+
+[Watch the demo here](https://drive.google.com/file/d/1x_wNb0BzwVfzDEm3do65d8JmeeEhLcXq/view?usp=sharing)
+
 # Sentiment Analysis Microservice
 
 This project provides an end-to-end, container-ready solution for **binary sentiment analysis**.
@@ -6,44 +10,7 @@ It contains:
 1. **Python FastAPI backend** – loads a Hugging Face transformer and exposes a REST endpoint for inference.
 2. **Fine-tuning CLI** – retrain the model on ## 8. Extending / Optional Enhancements
 
-### Backend Improvements
-* Switch to **GraphQL** using `strawberry-fastapi` for flexible queries
-* Add async request batching with `torchserve` or `ray` for high-throughput scenarios
-* Implement **model quantization** via `bitsandbytes` or export to ONNX for faster inference
-* Add **caching layer** with Redis for frequently requested predictions
-* **Hot-reload weights** by watching `backend/model/` with `watchdog`
-* **Multi-model support** for different languages or domains
 
-### Frontend Enhancements
-* **Build system**: Migrate to Create React App or Vite for optimization
-* **State management**: Add Redux or Zustand for complex state
-* **UI components**: Integrate Material-UI or Chakra UI
-* **Progressive Web App**: Add service worker for offline functionality
-* **Analytics**: Track user interactions and model performance
-* **Visualization**: Add charts for sentiment trends and confidence distributions
-
-### DevOps & Production
-* **CI/CD pipeline**: GitHub Actions workflow for automated testing and deployment
-* **Monitoring**: Integrate with Prometheus, Grafana, or Datadog
-* **Load testing**: Use Locust or k6 to test API performance
-* **Security**: Add API authentication with JWT tokens
-* **Documentation**: Auto-generate API docs and deployment guides
-* **Multi-environment**: Staging and production configurations
-
-### ML Improvements
-* **A/B testing**: Compare different model versions in production
-* **Data collection**: Gather user feedback for continuous improvement
-* **Model drift detection**: Monitor prediction quality over time
-* **Ensemble methods**: Combine multiple models for better accuracy
-* **Active learning**: Identify uncertain predictions for manual labeling
-
----
-
-## 9. Licenseed data and hot-swap the weights.
-3. **Minimal React frontend** – simple web page to query the API.
-4. **Docker Compose** – one-command local deployment on CPU-only machines.
-
----
 
 ## 1. Quick Start (Docker)
 
@@ -82,15 +49,6 @@ Stop with **Ctrl-C**.
 
 ## 3. API Documentation
 
-### Base URL
-- **Local Development**: `http://localhost:8000`
-- **Production**: `https://your-app-domain.com`
-
-### Authentication
-Currently no authentication required. For production, consider implementing:
-- API key authentication
-- JWT tokens
-- Rate limiting
 
 ### Endpoints
 
@@ -371,21 +329,6 @@ Weights are saved to `backend/model/`. On the next API restart (`docker-compose 
 * **Volume mounting**: Model directory survives container rebuilds for persistent fine-tuning
 * **Deterministic training**: Random seeds set (`random`, `numpy`, `torch`, `transformers`) for reproducible CPU runs
 
-#### Deployment & DevOps
-* **Docker containerization** for consistent environments across development and production
-* **Multi-stage builds** to optimize image sizes
-* **Environment variable configuration** for flexible deployment options
-* **Health checks** and graceful shutdown handling
-* **Logging** structured for debugging and monitoring
-
-### Technology Trade-offs
-
-| Choice | Pros | Cons | Rationale |
-|--------|------|------|-----------|
-| **DistilBERT vs BERT** | Faster inference, smaller size | Slight accuracy reduction | Better for web applications |
-| **FastAPI vs Flask** | Auto docs, type hints, async | Newer ecosystem | Modern development experience |
-| **CDN React vs Build** | Simple deployment | Less optimization | Rapid prototyping priority |
-| **Docker Compose vs K8s** | Simple setup | Less scalability | Development-focused |
 
 ## 6. Deployment Options
 
@@ -398,28 +341,6 @@ cd backend && python app.py
 cd frontend && open index.html
 ```
 
-### Cloud Platforms
-
-#### Render
-- **Backend**: Deploy using the existing Dockerfile
-- **Frontend**: Static site hosting from `/frontend` directory
-- **Environment variables**: Configure `MODEL_NAME`, `PORT` in dashboard
-- **Database**: Not required for this application
-
-#### Vercel
-- **Frontend**: Automatic static site deployment
-- **Backend**: Serverless functions or Docker container support
-- **Configuration**: Create `vercel.json` for custom deployment settings
-
-#### Heroku
-- **Container deployment**: Using `heroku.yml` or Dockerfile
-- **Add-ons**: Redis for caching, logging services
-- **Environment**: Configure via Heroku CLI or dashboard
-
-#### AWS/GCP
-- **Elastic Beanstalk** or **App Engine** for managed deployment
-- **Container services** (ECS, Cloud Run) for more control
-- **Load balancing** and auto-scaling for production traffic
 
 ### Environment Variables
 ```bash
